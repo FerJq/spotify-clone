@@ -11,7 +11,14 @@ import { useGetTopChartsQuery } from '../redux/services/shazamCore';
 import 'swiper/css';
 import 'swiper/css/FreeMode';
 
-const TopChartCard = () => (
+const TopChartCard = ({
+  song,
+  i,
+  isPlaying,
+  activeSong,
+  handlePauseClick,
+  handlePlayClick,
+}) => (
   <div className="w-full flex flex-row items-center hover:bg-[#4c426e] py-2 p-4 rounded-lg cursor-pointer mb-6">
     <h3 className="font-bold text-base text-white mr-3">{i + 1}</h3>
     <div className="flex-1 flex flex-row justify-between items-center">
@@ -29,12 +36,19 @@ const TopChartCard = () => (
         </Link>
       </div>
     </div>
+    <playPause
+      isPlaying={isPlaying}
+      activeSong={activeSong}
+      handlePauseClick={handlePauseClick}
+      handlePlayClick={handlePlayClick}
+      song={song}
+    />
   </div>
 );
 
 const TopPlay = () => {
   const dispatch = useDispatch();
-  const { ActiveSong, isPlaying } = useSelector((state) => state.player);
+  const { activeSong, isPlaying } = useSelector((state) => state.player);
   const { data } = useGetTopChartsQuery;
   const divRef = useRef(null);
 
@@ -45,9 +59,9 @@ const TopPlay = () => {
   const topPlays = data?.slice(0, 5);
 
   const handlePauseClick = () => {
-    dispatch(PlayPause(false));
+    dispatch(playPause(false));
   };
-  const handlePlayClick = () => {
+  const handlePlayClick = (song, i) => {
     dispatch(setActiveSong({ song, data, i }));
     dispatch(PlayPause(true));
   };
@@ -71,7 +85,7 @@ const TopPlay = () => {
               isPlaying={isPlaying}
               activeSong={activeSong}
               handlePauseClick={handlePauseClick}
-              handlePlayClick={handlePlayClick}
+              handlePlayClick={() => handlePlayClick(song, i)}
             />
           ))}
         </div>
