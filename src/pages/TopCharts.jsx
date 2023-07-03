@@ -1,4 +1,3 @@
-
 import { useSelector } from 'react-redux';
 
 import { Error, Loader, SongCard } from '../components';
